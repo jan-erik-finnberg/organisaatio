@@ -54,6 +54,7 @@ import fi.vm.sade.organisaatio.service.OrganisationHierarchyValidator;
 import fi.vm.sade.organisaatio.business.exception.OrganisaatioDateException;
 import fi.vm.sade.organisaatio.business.exception.OrganisaatioModifiedException;
 import fi.vm.sade.organisaatio.business.exception.YtunnusException;
+import fi.vm.sade.organisaatio.service.log.OrganisaatioAuditLogger;
 import fi.vm.sade.organisaatio.service.util.OrganisaatioUtil;
 
 import java.util.ArrayList;
@@ -287,7 +288,11 @@ public class OrganisaatioBusinessServiceImpl implements OrganisaatioBusinessServ
         if (OrganisaatioUtil.isRyhma(entity) == false) {
             solrIndexer.index(Lists.newArrayList(entity));
         }
-
+        
+        // Logging save event
+        OrganisaatioAuditLogger organisaatioAuditLogger = new OrganisaatioAuditLogger();
+        organisaatioAuditLogger.logSave(model, updating, skipParentDateValidation);
+        
         return entity;
     }
 
